@@ -1,81 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>After Midnight</title>
-
-<style>
-    body {
-        margin: 0;
-        height: 100vh;
-        background: radial-gradient(circle at top, #0f0f14, #050507);
-        color: #eaeaea;
-        font-family: 'Georgia', serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        overflow: hidden;
-    }
-
-    .card {
-        max-width: 420px;
-        padding: 30px;
-        animation: fadeIn 1.8s ease;
-    }
-
-    h1 {
-        font-weight: 400;
-        letter-spacing: 2px;
-        margin-bottom: 20px;
-    }
-
-    p {
-        font-size: 16px;
-        line-height: 1.6;
-        opacity: 0.85;
-    }
-
-    button {
-        margin-top: 25px;
-        padding: 10px 24px;
-        background: transparent;
-        border: 1px solid #777;
-        color: #eaeaea;
-        font-family: inherit;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    button:hover {
-        border-color: #fff;
-        letter-spacing: 1px;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-</style>
-</head>
-
-<body>
-
-<div class="card" id="content">
-    <h1>After Midnight</h1>
-    <p>
-        Some things only make sense  
-        when the world is quiet enough to listen.
-    </p>
-    <button onclick="nextStep()">Continue</button>
-</div>
-
 <script>
     let step = 0;
+    let musicStarted = false;
+
+    const audio = new Audio("song.mp3");
+    audio.loop = true;
+    audio.volume = 0.4;
 
     function nextStep() {
+        if (!musicStarted) {
+            audio.play().catch(() => {});
+            musicStarted = true;
+        }
+
         const content = document.getElementById("content");
 
         if (step === 0) {
@@ -117,7 +53,7 @@
                     would you be my Valentine?
                 </p>
                 <button onclick="yes()">Yes</button>
-                <button onclick="no()">Let me think</button>
+                <button onclick="no()">No</button>
             `;
         }
 
@@ -131,19 +67,18 @@
                 Then it’s settled.<br>
                 I’m really glad you stayed.
             </p>
+            <p style="margin-top:20px; opacity:0.6;">— Sho</p>
         `;
     }
 
     function no() {
         document.getElementById("content").innerHTML = `
-            <h1>No rush</h1>
+            <h1>No pressure</h1>
             <p>
-                Some answers deserve time.<br>
-                I’m still glad you reached this far.
+                Thank you for your honesty.<br>
+                I meant every word regardless.
             </p>
+            <p style="margin-top:20px; opacity:0.6;">— Sho</p>
         `;
     }
 </script>
-
-</body>
-</html>
