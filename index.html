@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After Midnight</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: radial-gradient(circle at top, #0f0f14, #050507);
+        color: #eaeaea;
+        font-family: 'Georgia', serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .card {
+        max-width: 420px;
+        padding: 30px;
+        animation: fadeIn 1.8s ease;
+    }
+
+    h1 {
+        font-weight: 400;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.6;
+        opacity: 0.85;
+    }
+
+    button {
+        margin-top: 25px;
+        padding: 10px 24px;
+        background: transparent;
+        border: 1px solid #777;
+        color: #eaeaea;
+        font-family: inherit;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        border-color: #fff;
+        letter-spacing: 1px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="card" id="content">
+    <h1>After Midnight</h1>
+    <p>
+        Some things only make sense  
+        when the world is quiet enough to listen.
+    </p>
+    <button onclick="nextStep()">Continue</button>
+</div>
+
+<script>
+    let step = 0;
+
+    function nextStep() {
+        const content = document.getElementById("content");
+
+        if (step === 0) {
+            content.innerHTML = `
+                <h1>11:59 PM</h1>
+                <p>
+                    Not everything needs to be loud to be real.<br>
+                    Some intentions are meant to be felt,
+                    not announced.
+                </p>
+                <button onclick="nextStep()">I’m listening</button>
+            `;
+        } 
+        else if (step === 1) {
+            content.innerHTML = `
+                <h1>12:00 AM</h1>
+                <p>
+                    I don’t believe in perfect timing.<br>
+                    I believe in moments we choose.
+                </p>
+                <button onclick="nextStep()">Go on</button>
+            `;
+        }
+        else if (step === 2) {
+            content.innerHTML = `
+                <h1>One Question</h1>
+                <p>
+                    If I asked you to spend Valentine’s Day with me —<br>
+                    not as a promise,<br>
+                    just as a moment —
+                </p>
+                <button onclick="nextStep()">…</button>
+            `;
+        }
+        else if (step === 3) {
+            content.innerHTML = `
+                <h1>Faith</h1>
+                <p>
+                    would you be my Valentine?
+                </p>
+                <button onclick="yes()">Yes</button>
+                <button onclick="no()">Let me think</button>
+            `;
+        }
+
+        step++;
+    }
+
+    function yes() {
+        document.getElementById("content").innerHTML = `
+            <h1>After Midnight</h1>
+            <p>
+                Then it’s settled.<br>
+                I’m really glad you stayed.
+            </p>
+        `;
+    }
+
+    function no() {
+        document.getElementById("content").innerHTML = `
+            <h1>No rush</h1>
+            <p>
+                Some answers deserve time.<br>
+                I’m still glad you reached this far.
+            </p>
+        `;
+    }
+</script>
+
+</body>
+</html>
