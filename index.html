@@ -6,228 +6,256 @@
 <title>After Midnight</title>
 
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        background: radial-gradient(circle at top, #0f0f14, #050507);
-        color: #eaeaea;
-        font-family: 'Georgia', serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        overflow: hidden;
-    }
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #0f0f14, #050507);
+    color: #eaeaea;
+    font-family: 'Georgia', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    cursor: pointer;
+}
 
-    .card {
-        max-width: 420px;
-        padding: 30px;
-        animation: fadeIn 1.8s ease;
-    }
+.card {
+    max-width: 440px;
+    padding: 30px;
+    animation: fadeIn 1.8s ease;
+    position: relative;
+    z-index: 2;
+}
 
-    h1 {
-        font-weight: 400;
-        letter-spacing: 2px;
-        margin-bottom: 20px;
-    }
+h1 {
+    font-weight: 400;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+}
 
-    p {
-        font-size: 16px;
-        line-height: 1.6;
-        opacity: 0.85;
-    }
+p {
+    font-size: 16px;
+    line-height: 1.7;
+    opacity: 0.9;
+}
 
-    button {
-        margin-top: 25px;
-        padding: 10px 24px;
-        background: transparent;
-        border: 1px solid #777;
-        color: #eaeaea;
-        font-family: inherit;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
+button {
+    margin-top: 25px;
+    padding: 10px 26px;
+    background: transparent;
+    border: 1px solid #777;
+    color: #eaeaea;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
 
-    button:hover {
-        border-color: #fff;
-        letter-spacing: 1px;
-    }
+button:hover {
+    border-color: #fff;
+    letter-spacing: 1px;
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+/* ✨ GLOWING YES */
+.yes-btn {
+    border-color: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+    to   { box-shadow: 0 0 18px rgba(255,255,255,0.8); }
+}
+
+.heart, .flower, .gift {
+    position: absolute;
+    bottom: -20px;
+    animation: float linear infinite;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 
 <body>
 
+<audio id="bgm" src="song.mp3" loop></audio>
+
 <div class="card" id="content">
     <h1>After Midnight</h1>
     <p>
-        Some things only make sense  
+        Some things only make sense<br>
         when the world is quiet enough to listen.
     </p>
     <button onclick="nextStep()">Continue</button>
 </div>
 
 <script>
-    let step = 0;
+let step = 0;
+let musicStarted = false;
+let secretTimer;
 
-    function nextStep() {
-        const content = document.getElementById("content");
+const audio = document.getElementById("bgm");
+audio.volume = 0;
 
-        if (step === 0) {
-            content.innerHTML = `
-                <h1>11:59 PM</h1>
-                <p>
-                    Not everything needs to be loud to be real.<br>
-                    Some intentions are meant to be felt,
-                    not announced.
-                </p>
-                <button onclick="nextStep()">I’m listening</button>
-            `;
-        } 
-        else if (step === 1) {
-            content.innerHTML = `
-                <h1>12:00 AM</h1>
-                <p>
-                    I don’t believe in perfect timing.<br>
-                    I believe in moments we choose.
-                </p>
-                <button onclick="nextStep()">Go on</button>
-            `;
-        }
-        else if (step === 2) {
-            content.innerHTML = `
-                <h1>One Question</h1>
-                <p>
-                    If I asked you to spend Valentine’s Day with me —<br>
-                    not as a promise,<br>
-                    just as a moment —
-                </p>
-                <button onclick="nextStep()">…</button>
-            `;
-        }
-        else if (step === 3) {
-            content.innerHTML = `
-                <h1>Faith</h1>
-                <p>
-                    would you be my Valentine?
-                </p>
-                <button onclick="yes()">Yes</button>
-                <button onclick="no()">Let me think</button>
-            `;
-        }
+function fadeInMusic() {
+    const fade = setInterval(() => {
+        if (audio.volume < 0.5) audio.volume += 0.02;
+        else clearInterval(fade);
+    }, 200);
+}
 
-        step++;
+function nextStep() {
+    if (!musicStarted) {
+        audio.play().catch(() => {});
+        fadeInMusic();
+        musicStarted = true;
     }
 
-    function yes() {
-        document.getElementById("content").innerHTML = `
-            <h1>After Midnight</h1>
-            <p>
-                Then it’s settled.<br>
-                I’m really glad you stayed.
-            </p>
-        `;
+    const c = document.getElementById("content");
+
+    if (step === 0) {
+        c.innerHTML = `
+        <h1>11:59 PM</h1>
+        <p>
+            Not everything needs to be loud to be real.<br>
+            Some feelings arrive softly,
+            yet refuse to leave.
+        </p>
+        <button onclick="nextStep()">I’m listening</button>`;
+    }
+    else if (step === 1) {
+        c.innerHTML = `
+        <h1>12:00 AM</h1>
+        <p>
+            Midnight is honest.<br>
+            It asks nothing—yet reveals everything.
+        </p>
+        <button onclick="nextStep()">Go on</button>`;
+    }
+    else if (step === 2) {
+        c.innerHTML = `
+        <h1>One Question</h1>
+        <p>
+            If I were to ask you something—<br>
+            not boldly, not carelessly,<br>
+            but with intention…
+        </p>
+        <button onclick="nextStep()">…</button>`;
+    }
+    else if (step === 3) {
+        c.innerHTML = `
+        <h1>Faith</h1>
+        <p>would you be my Valentine?</p>
+        <button class="yes-btn" onclick="yes()">Yes</button>
+        <button onclick="secret()">Let me think</button>`;
+        
+        secretTimer = setTimeout(secretEnding, 9000);
     }
 
-    function no() {
-        document.getElementById("content").innerHTML = `
-            <h1>No rush</h1>
-            <p>
-                Some answers deserve time.<br>
-                I’m still glad you reached this far.
-            </p>
-        `;
-    }
+    step++;
+}
+
+function yes() {
+    clearTimeout(secretTimer);
+    const c = document.getElementById("content");
+
+    c.innerHTML = `
+    <h1>After Midnight</h1>
+    <p>
+        Then my heart rests easy tonight.<br>
+        I am honoured you chose this moment.
+    </p>
+    <p style="margin-top:16px; opacity:0.7;">
+        ด้วยรัก — <span style="font-size:14px;">my damsel 🌙</span>
+    </p>
+    <p style="margin-top:16px; opacity:0.6;">— Sho</p>`;
+
+    spawnHearts();
+    spawnFlowers();
+    spawnGifts();
+}
+
+function secret() {
+    clearTimeout(secretTimer);
+    document.getElementById("content").innerHTML = `
+    <h1>No rush</h1>
+    <p>
+        Even hesitation is a kind of honesty.<br>
+        Thank you for staying this far.
+    </p>
+    <p style="margin-top:16px; opacity:0.6;">— Sho</p>`;
+}
+
+function secretEnding() {
+    document.getElementById("content").innerHTML = `
+    <h1>A Quiet Truth</h1>
+    <p>
+        Sometimes silence is not absence—<br>
+        it is simply courage taking its time.
+    </p>
+    <p style="margin-top:16px; opacity:0.6;">— Sho</p>`;
+}
+
+function spawnHearts() {
+    setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = "♡";
+        h.style.left = Math.random()*100 + "vw";
+        h.style.animationDuration = (7 + Math.random()*6) + "s";
+        h.style.color = "white";
+
+        setInterval(() => {
+            h.style.color = h.style.color === "white" ? "black" : "white";
+        }, 3000);
+
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 14000);
+    }, 600);
+}
+
+function spawnFlowers() {
+    ["🤍","🖤","🌼","💐"].forEach(sym => {
+        for (let i=0;i<4;i++) {
+            const f = document.createElement("div");
+            f.className = "flower";
+            f.innerHTML = sym;
+            f.style.left = Math.random()*100 + "vw";
+            f.style.animationDuration = (8 + Math.random()*6) + "s";
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 15000);
+        }
+    });
+}
+
+function spawnGifts() {
+    ["🍨","💐"].forEach(sym => {
+        for (let i=0;i<4;i++) {
+            const g = document.createElement("div");
+            g.className = "gift";
+            g.innerHTML = sym;
+            g.style.left = Math.random()*100 + "vw";
+            g.style.animationDuration = (9 + Math.random()*6) + "s";
+            document.body.appendChild(g);
+            setTimeout(() => g.remove(), 15000);
+        }
+    });
+}
 </script>
 
 </body>
 </html>
-<script>
-    let step = 0;
-    let musicStarted = false;
-
-    const audio = new Audio("song.mp3");
-    audio.loop = true;
-    audio.volume = 0.4;
-
-    function nextStep() {
-        if (!musicStarted) {
-            audio.play().catch(() => {});
-            musicStarted = true;
-        }
-
-        const content = document.getElementById("content");
-
-        if (step === 0) {
-            content.innerHTML = `
-                <h1>11:59 PM</h1>
-                <p>
-                    Not everything needs to be loud to be real.<br>
-                    Some intentions are meant to be felt,
-                    not announced.
-                </p>
-                <button onclick="nextStep()">I’m listening</button>
-            `;
-        } 
-        else if (step === 1) {
-            content.innerHTML = `
-                <h1>12:00 AM</h1>
-                <p>
-                    I don’t believe in perfect timing.<br>
-                    I believe in moments we choose.
-                </p>
-                <button onclick="nextStep()">Go on</button>
-            `;
-        }
-        else if (step === 2) {
-            content.innerHTML = `
-                <h1>One Question</h1>
-                <p>
-                    If I asked you to spend Valentine’s Day with me —<br>
-                    not as a promise,<br>
-                    just as a moment —
-                </p>
-                <button onclick="nextStep()">…</button>
-            `;
-        }
-        else if (step === 3) {
-            content.innerHTML = `
-                <h1>Faith</h1>
-                <p>
-                    would you be my Valentine?
-                </p>
-                <button onclick="yes()">Yes</button>
-                <button onclick="no()">No</button>
-            `;
-        }
-
-        step++;
-    }
-
-    function yes() {
-        document.getElementById("content").innerHTML = `
-            <h1>After Midnight</h1>
-            <p>
-                Then it’s settled.<br>
-                I’m really glad you stayed.
-            </p>
-            <p style="margin-top:20px; opacity:0.6;">— Sho</p>
-        `;
-    }
-
-    function no() {
-        document.getElementById("content").innerHTML = `
-            <h1>No pressure</h1>
-            <p>
-                Thank you for your honesty.<br>
-                I meant every word regardless.
-            </p>
-            <p style="margin-top:20px; opacity:0.6;">— Sho</p>
-        `;
-    }
-</script>
